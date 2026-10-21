@@ -7,6 +7,58 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- MathJax JS -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap');
+
+    /* Custom high-contrast Range Sliders */
+    input[type=range] {
+      -webkit-appearance: none;
+      background: transparent;
+    }
+    input[type=range]:focus {
+      outline: none;
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 4px;
+      cursor: pointer;
+      background: #000000;
+      border-radius: 0px;
+      border: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      height: 18px;
+      width: 18px;
+      border-radius: 0px;
+      background: #ffffff;
+      border: 2px solid #000000;
+      cursor: pointer;
+      -webkit-appearance: none;
+      margin-top: -7px;
+    }
+    input[type=range]::-moz-range-track {
+      width: 100%;
+      height: 4px;
+      cursor: pointer;
+      background: #000000;
+      border-radius: 0px;
+    }
+    input[type=range]::-moz-range-thumb {
+      height: 18px;
+      width: 18px;
+      border: 2px solid #000000;
+      border-radius: 0px;
+      background: #ffffff;
+      cursor: pointer;
+    }
+  </style>
 
 <title>Introduction to the SIR Model</title>
 <style>
@@ -118,61 +170,7 @@ R' = b &middot; I</pre>
       <p>3. Under what explicit condition will the number of active infections increase?</p>
       <p>4. If immunity is temporary and lasts for an average of 50 days (SIRS model), how does the rate equation for <code>S'</code> change?</p>
     </section> 
-
-<head>
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- MathJax JS -->
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap');
-
-    /* Custom high-contrast Range Sliders */
-    input[type=range] {
-      -webkit-appearance: none;
-      background: transparent;
-    }
-    input[type=range]:focus {
-      outline: none;
-    }
-    input[type=range]::-webkit-slider-runnable-track {
-      width: 100%;
-      height: 4px;
-      cursor: pointer;
-      background: #000000;
-      border-radius: 0px;
-      border: none;
-    }
-    input[type=range]::-webkit-slider-thumb {
-      height: 18px;
-      width: 18px;
-      border-radius: 0px;
-      background: #ffffff;
-      border: 2px solid #000000;
-      cursor: pointer;
-      -webkit-appearance: none;
-      margin-top: -7px;
-    }
-    input[type=range]::-moz-range-track {
-      width: 100%;
-      height: 4px;
-      cursor: pointer;
-      background: #000000;
-      border-radius: 0px;
-    }
-    input[type=range]::-moz-range-thumb {
-      height: 18px;
-      width: 18px;
-      border: 2px solid #000000;
-      border-radius: 0px;
-      background: #ffffff;
-      cursor: pointer;
-    }
-  </style>
-</head>
+  
 <body class="p-4 sm:p-8 max-w-5xl mx-auto space-y-8">
 
   <!-- Main Grid Container -->
