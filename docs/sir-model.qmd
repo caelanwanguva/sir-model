@@ -5,7 +5,7 @@ resources:
   - pyodide/
 ---
 
-The total population $N = S + I + R$ is divided into three distinct compartments that change dynamically according to coupled rate equations:
+The total population $N=S+I+R$ is divided into three distinct compartments that change dynamically according to coupled rate equations:
 Susceptible ($S$): Healthy individuals vulnerable to contracting the disease.
 $$S' = -a \cdot S \cdot I$$
 Decreases as susceptible and infected individuals interact and transmission occurs.
