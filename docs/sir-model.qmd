@@ -5,13 +5,29 @@ resources:
   - pyodide/
 ---
 
-The total population $N = S + I + R$ is divided into three distinct compartments that change over time according to rate equations:Susceptible ($S$): Healthy individuals vulnerable to contracting the disease.
+The total population $N = S + I + R$ is divided into three distinct compartments that change dynamically according to coupled rate equations:
+Susceptible ($S$): Healthy individuals vulnerable to contracting the disease.
 $$S' = -a \cdot S \cdot I$$
-Decreases as susceptible and infected individuals interact and transmission occurs.Infected ($I$): Sick individuals currently contagious and able to transmit the virus.
+Decreases as susceptible and infected individuals interact and transmission occurs.
+Infected ($I$): Sick individuals currently contagious and capable of transmitting the virus.
 $$I' = a \cdot S \cdot I - b \cdot I$$
-Gains new cases from $S$ through transmission, and loses individuals as they recover into $R$.Recovered ($R$): Individuals who have recovered and gained permanent immunity.
+Gains new cases from $S$ through transmission, and loses individuals as they recover into $R$.
+Recovered ($R$): Individuals who have recovered and gained permanent immunity.
 $$R' = b \cdot I$$
-Increases as infected individuals complete their recovery period.2. Model ParametersTransmission Coefficient ($a$):Meaning: Measures the rate of transmission per contact between susceptible and infected individuals. It depends on both individual contact rates and the transmissibility/contagiousness of the illness.Units: $\text{person}^{-1}\text{day}^{-1}$ (or $\frac{1}{\text{person} \cdot \text{day}}$).Physical Interpretation: $\frac{1}{a}$ represents the total exposure (in person-days) required for a typical susceptible person to catch the illness. Measures like mask-wearing or social distancing lower $a$.Recovery Coefficient ($b$):Meaning: The daily fraction of infected individuals who recover. It depends solely on the duration of the illness itself.Units: $\text{day}^{-1}$ (or $\frac{1}{\text{days}}$).Physical Interpretation: $\frac{1}{b}$ represents the average duration of illness in days (e.g., if an illness lasts $14$ days, $b = \frac{1}{14} \approx 0.0714\text{ day}^{-1}$).Threshold Population ($S_{\text{th}} = \frac{b}{a}$):An epidemic will spread ($I' > 0$) only if the susceptible population exceeds this threshold ($S > S_{\text{th}}$).
+Increases as infected individuals complete their recovery period.
+---
+Transmission Coefficient ($a$):
+Meaning: Measures the rate of transmission per contact between susceptible and infected individuals. It depends on interaction frequency and illness contagiousness.
+Units: $\text{person}^{-1}\text{day}^{-1}$ (or $\frac{1}{\text{person} \cdot \text{day}}$).
+Physical Interpretation: $\frac{1}{a}$ represents the total exposure (in person-days) needed for a susceptible person to catch the illness. Measures like mask-wearing or social distancing lower $a$.
+Recovery Coefficient ($b$):
+Meaning: The daily fraction of infected individuals who recover. It depends on the duration of the illness.
+Units: $\text{day}^{-1}$ (or $\frac{1}{\text{day}}$).
+Physical Interpretation: $\frac{1}{b}$ represents the average duration of illness in days (e.g., if an illness lasts 14 days, $b = \frac{1}{14} \approx 0.0714\text{ day}^{-1}$).
+Threshold Population ($S_{\text{th}} = \frac{b}{a}$):
+An epidemic will spread ($I' > 0$) only if the susceptible population exceeds this threshold ($S > S_{\text{th}}$).
+---
+
 
 The Python runs right here in your browser, and the table shows whatever the program prints. Edit the code and the table updates; **Reset** brings back the original program.
 
