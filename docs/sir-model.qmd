@@ -5,7 +5,7 @@ resources:
   - pyodide/
 ---
 
-This page details the mathematical structure and mechanics of the SIR Model (Susceptible–Infected–Recovered), which models how infectious diseases spread through a population.1. Compartment Model & Governing EquationsThe total population $N = S + I + R$ is divided into three distinct compartments that change over time according to rate equations:Susceptible ($S$): Healthy individuals vulnerable to contracting the disease.
+This page details the mathematical structure and mechanics of the SIR Model (Susceptible–Infected–Recovered), which models how infectious diseases spread through a population.1. Compartment Model & Governing EquationsThe total population $$N = S + I + R$$ is divided into three distinct compartments that change over time according to rate equations:Susceptible ($S$): Healthy individuals vulnerable to contracting the disease.
 $$S' = -a \cdot S \cdot I$$
 Decreases as susceptible and infected individuals interact and transmission occurs.Infected ($I$): Sick individuals currently contagious and able to transmit the virus.
 $$I' = a \cdot S \cdot I - b \cdot I$$
