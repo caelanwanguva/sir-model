@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>SIR model: from BASIC to Python</title>
+<title>Introduction to the SIR Model</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -87,7 +87,7 @@ ul.task-list li input[type="checkbox"] {
 
     <section>
       <h2>Governing Differential Equations</h2>
-      <p>The transition between compartments is defined by three coupled rate equations:</p>
+      <p>The transition between compartments is defined by three rate equations:</p>
       
       <pre>
 S' = -a * S * I
@@ -96,6 +96,46 @@ R' = b * I
       </pre>
 
       <p><strong>Population Conservation:</strong> Notice that <code>S' + I' + R' = 0</code>. This confirms that the total population <code>N = S + I + R</code> remains constant over time.</p>
+    </section>
+
+      <section>
+      <h2>Model Parameters</h2>
+      <p><strong>Transmission Coefficient (a):</strong> Measures the contagion rate per interaction between susceptible and infected individuals. Measures like social distancing or mask usage lower <em>a</em>.</p>
+      <p><strong>Recovery Coefficient (b):</strong> The daily fraction of infected individuals who recover. It equals <code>1 / d</code>, where <em>d</em> is the average illness duration in days.</p>
+      <p><strong>Threshold Population (S<sub>th</sub>):</strong> An outbreak occurs (<code>I' > 0</code>) only if <code>S > S<sub>th</sub> = b / a</code>.</p>
+    </section>
+
+      <section>
+      <h2>Interactive Epidemic Simulator</h2>
+
+      <div class="control-group">
+        <label for="paramS">Initial Susceptible (S): <span id="valS">45400</span></label>
+        <input type="range" id="paramS" min="1000" max="100000" step="1000" value="45400">
+      </div>
+
+      <div class="control-group">
+        <label for="paramI">Initial Infected (I): <span id="valI">2100</span></label>
+        <input type="range" id="paramI" min="1" max="10000" step="50" value="2100">
+      </div>
+
+      <div class="control-group">
+        <label for="paramA">Transmission Rate (a): <span id="valA">0.000010</span></label>
+        <input type="range" id="paramA" min="0.000001" max="0.000050" step="0.000001" value="0.000010">
+      </div>
+
+      <div class="control-group">
+        <label for="paramDays">Illness Duration (Days): <span id="valDays">14</span></label>
+        <input type="range" id="paramDays" min="1" max="30" step="1" value="14">
+      </div>
+
+      <p>
+        <strong>Threshold (S<sub>th</sub>):</strong> <span id="calcSth">7,143</span><br>
+        <strong>Status:</strong> <span id="calcOutbreak">ACTIVE</span>
+      </p>
+
+      <div class="chart-container">
+        <canvas id="sirChart"></canvas>
+      </div>
     </section>
    
 
