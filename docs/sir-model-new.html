@@ -534,9 +534,14 @@ R' = b &middot; I</pre>
     updateUI();
   </script>
 
-<p>The Python runs right here in your browser, and the table shows whatever the program prints. Edit the code and the table updates; **Reset** brings back the original program.</p>
+<section>
+      <h2>Progamming Sandbox</h2>
+      <p>The Python runs right here in your browser, and the table shows whatever the program prints. Edit the code and the table updates; **Reset** brings back the original program.</p>
 
 <p>The model: each day, susceptible people become infected at a rate of 0.00001 × S × I, and infected people recover at a rate of I / 14 (about a two-week illness). The program uses Euler's method: it computes the rates, multiplies by the time step `deltat`, and adds the changes to S, I and R.</p>
+    </section> 
+
+
   
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
