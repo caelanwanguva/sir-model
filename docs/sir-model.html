@@ -72,53 +72,33 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>In the SIR model, the total population $$N = S + I + R$$ is divided into three distinct compartments that change over time according to rate equations:</p>
-
-  <ul>
-    <li>
-      <strong>Susceptible (S):</strong> Healthy individuals vulnerable to contracting the disease.
-      <br>
-      <code>S' = -a * S * I</code>
-      <br>
-      <small>Decreases as susceptible and infected individuals interact and transmission occurs.</small>
-    </li>
-    <li style="margin-top: 15px;">
-      <strong>Infected (I):</strong> Sick individuals currently contagious and able to transmit the virus.
-      <br>
-      <code>I' = a * S * I - b * I</code>
-      <br>
-      <small>Gains new cases from $S$ through transmission, and loses individuals as they recover into $R$.</small>
-    </li>
-    <li style="margin-top: 15px;">
-      <strong>Recovered (R):</strong> Individuals who have recovered and gained permanent immunity.
-      <br>
-      <code>R' = b * I</code>
-      <br>
-      <small>Increases as infected individuals complete their recovery period.</small>
-    </li>
-  </ul>
-
-<ul>
-    <li>
-      <strong>Transmission Coefficient (<code>a</code>):</strong>
+<section>
+      <h2>What is the SIR Model?</h2>
+      <p>
+        The <strong>SIR Model</strong> is a compartmental population model used in epidemiology to predict how an infectious disease spreads across a population. The overall population (<em>N</em>) is divided into three distinct groups that change dynamically over time (<em>t</em>):
+      </p>
+      
       <ul>
-        <li><strong>Meaning:</strong> Measures the rate of transmission per contact between susceptible and infected individuals. It depends on both individual contact rates and the transmissibility/contagiousness of the illness.</li>
-        <li><strong>Units:</strong> $\text{person}^{-1}\text{day}^{-1}$ (or $\frac{1}{\text{person} \cdot \text{day}}$).</li>
-        <li><strong>Physical Interpretation:</strong> $1/a$ represents the total exposure (in person-days) required for a typical susceptible person to catch the illness. Measures like mask-wearing or social distancing lower $a$.</li>
+        <li><strong>Susceptible (S):</strong> Healthy individuals who have not yet caught the disease but are vulnerable to infection.</li>
+        <li><strong>Infected (I):</strong> Individuals who currently have the disease, are contagious, and can infect susceptible people.</li>
+        <li><strong>Recovered (R):</strong> Individuals who have recovered from the disease and gained permanent immunity.</li>
       </ul>
-    </li>
-    <li style="margin-top: 15px;">
-      <strong>Recovery Coefficient (<code>b</code>):</strong>
-      <ul>
-        <li><strong>Meaning:</strong> The daily fraction of infected individuals who recover. It depends solely on the duration of the illness itself.</li>
-        <li><strong>Units:</strong> $\text{day}^{-1}$ (or $\frac{1}{\text{days}}$).</li>
-        <li><strong>Physical Interpretation:</strong> $1/b$ represents the average duration of illness in days (e.g., if an illness lasts 10 days, $b = 1/10 = 0.1 \text{ day}^{-1}$).</li>
-      </ul>
-    </li>
-    <li style="margin-top: 15px;">
-      <strong>Threshold Population (<code>S_th = b / a</code>):</strong> An epidemic will spread ($I' > 0$) only if the susceptible population exceeds this threshold ($S > S_{\text{th}}$).
-    </li>
-  </ul>
+    </section>
+
+    <section>
+      <h2>Governing Differential Equations</h2>
+      <p>The transition between compartments is defined by three coupled rate equations:</p>
+      
+      <pre>
+S' = -a * S * I
+I' = a * S * I - b * I
+R' = b * I
+      </pre>
+
+      <p><strong>Population Conservation:</strong> Notice that <code>S' + I' + R' = 0</code>. This confirms that the total population <code>N = S + I + R</code> remains constant over time.</p>
+    </section>
+   
+
 
   
 <div class="callout callout-style-default callout-note callout-titled">
