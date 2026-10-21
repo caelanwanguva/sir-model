@@ -119,7 +119,437 @@ R' = b &middot; I</pre>
       <p>4. If immunity is temporary and lasts for an average of 50 days (SIRS model), how does the rate equation for <code>S'</code> change?</p>
     </section> 
 
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIR Model - Monochrome Trajectory Explorer</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- MathJax JS -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap');
+    
+    body {
+      font-family: 'Newsreader', Georgia, serif;
+      background-color: #ffffff;
+      color: #000000;
+    }
 
+    code, pre, .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Custom high-contrast Range Sliders */
+    input[type=range] {
+      -webkit-appearance: none;
+      background: transparent;
+    }
+    input[type=range]:focus {
+      outline: none;
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 4px;
+      cursor: pointer;
+      background: #000000;
+      border-radius: 0px;
+      border: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      height: 18px;
+      width: 18px;
+      border-radius: 0px;
+      background: #ffffff;
+      border: 2px solid #000000;
+      cursor: pointer;
+      -webkit-appearance: none;
+      margin-top: -7px;
+    }
+    input[type=range]::-moz-range-track {
+      width: 100%;
+      height: 4px;
+      cursor: pointer;
+      background: #000000;
+      border-radius: 0px;
+    }
+    input[type=range]::-moz-range-thumb {
+      height: 18px;
+      width: 18px;
+      border: 2px solid #000000;
+      border-radius: 0px;
+      background: #ffffff;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body class="p-4 sm:p-8 max-w-5xl mx-auto space-y-8">
+
+  <!-- Main Grid Container -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+    <!-- Left Column: Controls & Sliders -->
+    <section class="lg:col-span-5 space-y-6">
+      <div class="border-2 border-black p-5 bg-white space-y-5">
+        <h2 class="text-lg font-bold font-serif border-b border-black pb-2 uppercase tracking-wide">
+          Model Parameters
+        </h2>
+
+        <!-- Transmission Parameter Slider (a) -->
+        <div class="space-y-1.5">
+          <div class="flex justify-between text-xs font-mono">
+            <label for="paramA" class="font-bold">a (Transmission):</label>
+            <span id="dispA" class="font-bold">0.0000100</span>
+          </div>
+          <input id="paramA" type="range" min="0.000001" max="0.000030" step="0.0000005" value="0.0000100" class="w-full">
+          <p class="text-[11px] text-gray-600 italic">Controls contact rate & infection spread.</p>
+        </div>
+
+        <!-- Recovery Parameter Slider (b) -->
+        <div class="space-y-1.5">
+          <div class="flex justify-between text-xs font-mono">
+            <label for="paramB" class="font-bold">b (Recovery Rate):</label>
+            <span id="dispB" class="font-bold">0.0714 (1/14)</span>
+          </div>
+          <input id="paramB" type="range" min="0.02" max="0.25" step="0.005" value="0.0714" class="w-full">
+          <p class="text-[11px] text-gray-600 italic">Daily recovery fraction ($1 / \text{days ill}$).</p>
+        </div>
+
+        <!-- Initial Susceptibles (S0) -->
+        <div class="space-y-1.5">
+          <div class="flex justify-between text-xs font-mono">
+            <label for="paramS0" class="font-bold">Initial Susceptible (S₀):</label>
+            <span id="dispS0" class="font-bold">45,400</span>
+          </div>
+          <input id="paramS0" type="range" min="10000" max="90000" step="1000" value="45400" class="w-full">
+        </div>
+
+        <!-- Initial Infected (I0) -->
+        <div class="space-y-1.5">
+          <div class="flex justify-between text-xs font-mono">
+            <label for="paramI0" class="font-bold">Initial Infected (I₀):</label>
+            <span id="dispI0" class="font-bold">2,100</span>
+          </div>
+          <input id="paramI0" type="range" min="100" max="10000" step="100" value="2100" class="w-full">
+        </div>
+
+        <!-- Step Size dt -->
+        <div class="space-y-1.5">
+          <div class="flex justify-between text-xs font-mono">
+            <label for="paramDT" class="font-bold">Step Size (Δt):</label>
+            <span id="dispDT" class="font-bold">1.0 day</span>
+          </div>
+          <input id="paramDT" type="range" min="0.1" max="2.0" step="0.1" value="1.0" class="w-full">
+        </div>
+
+        <!-- Reset Button -->
+        <button id="resetBtn" class="w-full py-2 bg-black text-white text-xs font-mono font-bold uppercase tracking-wider hover:bg-gray-800 transition">
+          Reset Default Values
+        </button>
+      </div>
+
+      <!-- Analytical Metrics Box -->
+      <div class="border-2 border-black p-4 bg-gray-50 space-y-2 text-xs font-mono">
+        <div class="flex justify-between border-b border-gray-300 pb-1">
+          <span>Threshold S_th (b/a):</span>
+          <span id="calcSth" class="font-bold">7,143</span>
+        </div>
+        <div class="flex justify-between border-b border-gray-300 pb-1">
+          <span>Epidemic Status:</span>
+          <span id="calcStatus" class="font-bold">SPREADING</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Total Population (N):</span>
+          <span id="calcN" class="font-bold">50,000</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Column: Graph and Day Inspection Slider -->
+    <section class="lg:col-span-7 space-y-6">
+      
+      <!-- Time Day Inspection Slider -->
+      <div class="border-2 border-black p-4 bg-white space-y-3">
+        <div class="flex justify-between items-center border-b border-black pb-2">
+          <label for="timeSlider" class="text-sm font-bold font-serif uppercase tracking-wide">
+            Time Stepper (Inspection Day)
+          </label>
+          <span id="dispDay" class="text-lg font-bold font-mono px-2 py-0.5 border border-black bg-gray-100">
+            Day 0
+          </span>
+        </div>
+        
+        <input id="timeSlider" type="range" min="0" max="30" step="1" value="0" class="w-full">
+
+        <!-- Live Instant Values Display -->
+        <div class="grid grid-cols-3 gap-2 text-center pt-1 font-mono text-xs">
+          <div class="border border-black p-2 bg-white">
+            <div class="font-bold text-gray-700">S (Solid)</div>
+            <div id="liveS" class="text-sm font-bold mt-0.5">45,400</div>
+            <div id="liveSprime" class="text-[10px] text-gray-600 mt-0.5">S' = -953.4</div>
+          </div>
+          <div class="border border-black p-2 bg-white">
+            <div class="font-bold text-gray-700">I (Dashed)</div>
+            <div id="liveI" class="text-sm font-bold mt-0.5">2,100</div>
+            <div id="liveIprime" class="text-[10px] text-gray-600 mt-0.5">I' = +803.4</div>
+          </div>
+          <div class="border border-black p-2 bg-white">
+            <div class="font-bold text-gray-700">R (Dotted)</div>
+            <div id="liveR" class="text-sm font-bold mt-0.5">2,500</div>
+            <div id="liveRprime" class="text-[10px] text-gray-600 mt-0.5">R' = +150.0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Black and White Canvas Container -->
+      <div class="border-2 border-black p-4 bg-white">
+        <div class="relative w-full h-80">
+          <canvas id="monochromeChart"></canvas>
+        </div>
+        <!-- Custom Legend matching Textbook Lines -->
+        <div class="flex justify-center items-center gap-6 mt-4 pt-3 border-t border-gray-300 text-xs font-mono">
+          <div class="flex items-center gap-2">
+            <span class="inline-block w-6 h-0.5 bg-black"></span>
+            <span>Susceptible (S)</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="inline-block w-6 h-0 border-b-2 border-dashed border-black"></span>
+            <span>Infected (I)</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="inline-block w-6 h-0 border-b-2 border-dotted border-black"></span>
+            <span>Recovered (R)</span>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </div>
+
+  <script>
+    // Elements Reference
+    const paramA = document.getElementById('paramA');
+    const paramB = document.getElementById('paramB');
+    const paramS0 = document.getElementById('paramS0');
+    const paramI0 = document.getElementById('paramI0');
+    const paramDT = document.getElementById('paramDT');
+    const timeSlider = document.getElementById('timeSlider');
+    const resetBtn = document.getElementById('resetBtn');
+
+    const dispA = document.getElementById('dispA');
+    const dispB = document.getElementById('dispB');
+    const dispS0 = document.getElementById('dispS0');
+    const dispI0 = document.getElementById('dispI0');
+    const dispDT = document.getElementById('dispDT');
+    const dispDay = document.getElementById('dispDay');
+
+    const calcSth = document.getElementById('calcSth');
+    const calcStatus = document.getElementById('calcStatus');
+    const calcN = document.getElementById('calcN');
+
+    const liveS = document.getElementById('liveS');
+    const liveI = document.getElementById('liveI');
+    const liveR = document.getElementById('liveR');
+    const liveSprime = document.getElementById('liveSprime');
+    const liveIprime = document.getElementById('liveIprime');
+    const liveRprime = document.getElementById('liveRprime');
+
+    let historyData = [];
+
+    // Euler Simulation Calculation Function
+    function runSimulation() {
+      const a = parseFloat(paramA.value);
+      const b = parseFloat(paramB.value);
+      const S0 = parseFloat(paramS0.value);
+      const I0 = parseFloat(paramI0.value);
+      const R0 = 2500; // Fixed baseline recovered
+      const dt = parseFloat(paramDT.value);
+
+      historyData = [];
+      let S = S0;
+      let I = I0;
+      let R = R0;
+
+      // Day 0 Initial
+      historyData.push({
+        day: 0,
+        S: S,
+        I: I,
+        R: R,
+        Sp: -a * S * I,
+        Ip: a * S * I - b * I,
+        Rp: b * I
+      });
+
+      // Integrate for 30 steps
+      for (let step = 1; step <= 30; step++) {
+        let Sp = -a * S * I;
+        let Ip = a * S * I - b * I;
+        let Rp = b * I;
+
+        S += Sp * dt;
+        I += Ip * dt;
+        R += Rp * dt;
+
+        // Prevent negative values
+        if (S < 0) S = 0;
+        if (I < 0) I = 0;
+
+        let nextSp = -a * S * I;
+        let nextIp = a * S * I - b * I;
+        let nextRp = b * I;
+
+        historyData.push({
+          day: step,
+          S: S,
+          I: I,
+          R: R,
+          Sp: nextSp,
+          Ip: nextIp,
+          Rp: nextRp
+        });
+      }
+
+      // Update Threshold Analytics
+      const Sth = b / a;
+      calcSth.innerText = Math.round(Sth).toLocaleString();
+      calcN.innerText = Math.round(S0 + I0 + R0).toLocaleString();
+      
+      if (S0 > Sth) {
+        calcStatus.innerText = "EPIDEMIC SURGE (I' > 0)";
+        calcStatus.className = "font-bold underline";
+      } else {
+        calcStatus.innerText = "DECLINING (I' ≤ 0)";
+        calcStatus.className = "font-bold text-gray-600";
+      }
+    }
+
+    // Initialize Chart.js with Black & White Styling
+    const ctx = document.getElementById('monochromeChart').getContext('2d');
+    
+    const monochromeChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: Array.from({length: 31}, (_, i) => `Day ${i}`),
+        datasets: [
+          {
+            label: 'Susceptible (S)',
+            data: [],
+            borderColor: '#000000',
+            borderWidth: 2,
+            borderDash: [], // Solid line
+            pointRadius: 2,
+            pointBackgroundColor: '#000000',
+            tension: 0.1
+          },
+          {
+            label: 'Infected (I)',
+            data: [],
+            borderColor: '#000000',
+            borderWidth: 2,
+            borderDash: [6, 4], // Dashed line
+            pointRadius: 2,
+            pointBackgroundColor: '#000000',
+            tension: 0.1
+          },
+          {
+            label: 'Recovered (R)',
+            data: [],
+            borderColor: '#000000',
+            borderWidth: 2,
+            borderDash: [2, 3], // Dotted line
+            pointRadius: 2,
+            pointBackgroundColor: '#000000',
+            tension: 0.1
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 0 }, // Instant responsive update
+        plugins: {
+          legend: { display: false } // Custom HTML legend used instead
+        },
+        scales: {
+          x: {
+            grid: { color: '#e5e7eb' },
+            ticks: { font: { family: 'JetBrains Mono', size: 10 }, color: '#000000' }
+          },
+          y: {
+            grid: { color: '#e5e7eb' },
+            ticks: { 
+              font: { family: 'JetBrains Mono', size: 10 }, 
+              color: '#000000',
+              callback: val => val.toLocaleString()
+            }
+          }
+        }
+      }
+    });
+
+    // Refresh View & Update Controls
+    function updateUI() {
+      runSimulation();
+
+      // Update Slider Display Labels
+      dispA.innerText = parseFloat(paramA.value).toFixed(7);
+      dispB.innerText = `${parseFloat(paramB.value).toFixed(4)} (1/${(1/paramB.value).toFixed(1)}d)`;
+      dispS0.innerText = parseInt(paramS0.value).toLocaleString();
+      dispI0.innerText = parseInt(paramI0.value).toLocaleString();
+      dispDT.innerText = `${parseFloat(paramDT.value).toFixed(1)} day`;
+
+      // Update Chart Data
+      monochromeChart.data.datasets[0].data = historyData.map(h => h.S);
+      monochromeChart.data.datasets[1].data = historyData.map(h => h.I);
+      monochromeChart.data.datasets[2].data = historyData.map(h => h.R);
+
+      // Highlight active day point
+      const selectedDay = parseInt(timeSlider.value);
+      monochromeChart.data.datasets.forEach(ds => {
+        ds.pointRadius = historyData.map((_, i) => i === selectedDay ? 6 : 2);
+        ds.pointStyle = historyData.map((_, i) => i === selectedDay ? 'rectRot' : 'circle');
+      });
+
+      monochromeChart.update();
+
+      // Update Live Day Inspection Metrics
+      const curr = historyData[selectedDay];
+      dispDay.innerText = `Day ${curr.day}`;
+      liveS.innerText = curr.S.toLocaleString('en-US', {maximumFractionDigits: 1});
+      liveI.innerText = curr.I.toLocaleString('en-US', {maximumFractionDigits: 1});
+      liveR.innerText = curr.R.toLocaleString('en-US', {maximumFractionDigits: 1});
+
+      liveSprime.innerText = `S' = ${curr.Sp > 0 ? '+' : ''}${curr.Sp.toFixed(1)}`;
+      liveIprime.innerText = `I' = ${curr.Ip > 0 ? '+' : ''}${curr.Ip.toFixed(1)}`;
+      liveRprime.innerText = `R' = ${curr.Rp > 0 ? '+' : ''}${curr.Rp.toFixed(1)}`;
+    }
+
+    // Attach Event Listeners
+    [paramA, paramB, paramS0, paramI0, paramDT, timeSlider].forEach(elem => {
+      elem.addEventListener('input', updateUI);
+    });
+
+    resetBtn.addEventListener('click', () => {
+      paramA.value = 0.0000100;
+      paramB.value = 0.0714;
+      paramS0.value = 45400;
+      paramI0.value = 2100;
+      paramDT.value = 1.0;
+      timeSlider.value = 0;
+      updateUI();
+    });
+
+    // Initial load
+    updateUI();
+  </script>
+
+The Python runs right here in your browser, and the table shows whatever the program prints. Edit the code and the table updates; **Reset** brings back the original program.
+
+The model: each day, susceptible people become infected at a rate of 0.00001 × S × I, and infected people recover at a rate of I / 14 (about a two-week illness). The program uses Euler's method: it computes the rates, multiplies by the time step `deltat`, and adds the changes to S, I and R.
   
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
