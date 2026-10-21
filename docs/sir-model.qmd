@@ -15,7 +15,7 @@ Gains new cases from $S$ through transmission, and loses individuals as they rec
 Recovered ($R$): Individuals who have recovered and gained permanent immunity.
 $$R' = b \cdot I$$
 Increases as infected individuals complete their recovery period.
----
+
 Transmission Coefficient ($a$):
 Meaning: Measures the rate of transmission per contact between susceptible and infected individuals. It depends on interaction frequency and illness contagiousness.
 Units: $\text{person}^{-1}\text{day}^{-1}$ (or $\frac{1}{\text{person} \cdot \text{day}}$).
@@ -26,12 +26,12 @@ Units: $\text{day}^{-1}$ (or $\frac{1}{\text{day}}$).
 Physical Interpretation: $\frac{1}{b}$ represents the average duration of illness in days (e.g., if an illness lasts 14 days, $b = \frac{1}{14} \approx 0.0714\text{ day}^{-1}$).
 Threshold Population ($S_{\text{th}} = \frac{b}{a}$):
 An epidemic will spread ($I' > 0$) only if the susceptible population exceeds this threshold ($S > S_{\text{th}}$).
----
-
 
 The Python runs right here in your browser, and the table shows whatever the program prints. Edit the code and the table updates; **Reset** brings back the original program.
 
 The model: each day, susceptible people become infected at a rate of 0.00001 × S × I, and infected people recover at a rate of I / 14 (about a two-week illness). The program uses Euler's method: it computes the rates, multiplies by the time step `deltat`, and adds the changes to S, I and R.
+
+---
 
 ::: {.callout-note collapse="true"}
 ## Original BASIC program
