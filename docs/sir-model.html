@@ -105,39 +105,13 @@ R' = b * I
       <p><strong>Threshold Population (S<sub>th</sub>):</strong> An outbreak occurs (<code>I' > 0</code>) only if <code>S > S<sub>th</sub> = b / a</code>.</p>
     </section>
 
+     
       <section>
-      <h2>Interactive Epidemic Simulator</h2>
-
-      <div class="control-group">
-        <label for="paramS">Initial Susceptible (S): <span id="valS">45400</span></label>
-        <input type="range" id="paramS" min="1000" max="100000" step="1000" value="45400">
-      </div>
-
-      <div class="control-group">
-        <label for="paramI">Initial Infected (I): <span id="valI">2100</span></label>
-        <input type="range" id="paramI" min="1" max="10000" step="50" value="2100">
-      </div>
-
-      <div class="control-group">
-        <label for="paramA">Transmission Rate (a): <span id="valA">0.000010</span></label>
-        <input type="range" id="paramA" min="0.000001" max="0.000050" step="0.000001" value="0.000010">
-      </div>
-
-      <div class="control-group">
-        <label for="paramDays">Illness Duration (Days): <span id="valDays">14</span></label>
-        <input type="range" id="paramDays" min="1" max="30" step="1" value="14">
-      </div>
-
-      <p>
-        <strong>Threshold (S<sub>th</sub>):</strong> <span id="calcSth">7,143</span><br>
-        <strong>Status:</strong> <span id="calcOutbreak">ACTIVE</span>
-      </p>
-
-      <div class="chart-container">
-        <canvas id="sirChart"></canvas>
-      </div>
-    </section>
-   
+      <h2>Questions</h2>
+      <p>What does the sum of all three rates \(S' + I' + R'\) equal in the standard SIR model, and what physical property does this imply?</p>
+      <p>Under what explicit condition will the number of active infections \(I\) increase (\(I' > 0\))?</p>
+      <p>If public health authorities impose masking and social distancing rules, which parameter changes and how?</p>
+    </section> 
 
 
   
