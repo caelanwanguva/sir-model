@@ -15,14 +15,9 @@ Increases as infected individuals complete their recovery period.
 
 Transmission Coefficient ($a$):Meaning: Measures the rate of transmission per contact between susceptible and infected individuals. It depends on both individual contact rates and the transmissibility/contagiousness of the illness.Units: $\text{person}^{-1}\text{day}^{-1}$ (or $\frac{1}{\text{person} \cdot \text{day}}$).Physical Interpretation: $1/a$ represents the total exposure (in person-days) required for a typical susceptible person to catch the illness. Measures like mask-wearing or social distancing lower $a$.Recovery Coefficient ($b$):Meaning: The daily fraction of infected individuals who recover. It depends solely on the duration of the illness itself.Units: $\text{day}^{-1}$ (or $\frac{1}{\text{days}}$).Physical Interpretation: $1/b$ represents the average duration of illness in days (e.g., if an illness lasts 14 days, $b = 1/14 \approx 0.0714\text{ day}^{-1}$).Threshold Population ($S_{\text{th}} = b / a$):An epidemic will spread ($I' > 0$) only if the susceptible population exceeds this threshold ($S > S_{\text{th}}$).
 
-The Python runs right here in your browser, and
-the table shows whatever the program prints. Edit the code and the table updates;
-**Reset** brings back the original program.
+The Python runs right here in your browser, and the table shows whatever the program prints. Edit the code and the table updates; **Reset** brings back the original program.
 
-The model: each day, susceptible people become infected at a rate of 0.00001 × S × I,
-and infected people recover at a rate of I / 14 (about a two-week illness). The program
-uses Euler's method: it computes the rates, multiplies by the time step `deltat`, and
-adds the changes to S, I and R.
+The model: each day, susceptible people become infected at a rate of 0.00001 × S × I, and infected people recover at a rate of I / 14 (about a two-week illness). The program uses Euler's method: it computes the rates, multiplies by the time step `deltat`, and adds the changes to S, I and R.
 
 ::: {.callout-note collapse="true"}
 ## Original BASIC program
