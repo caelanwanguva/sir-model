@@ -94,22 +94,18 @@ S' = -a * S * I
 I' = a * S * I - b * I
 R' = b * I
       </pre>
-
-      <p><strong>Population Conservation:</strong> Notice that <code>S' + I' + R' = 0</code>. This confirms that the total population <code>N = S + I + R</code> remains constant over time.</p>
     </section>
 
       <section>
       <h2>Model Parameters</h2>
       <p><strong>Transmission Coefficient (a):</strong> Measures the contagion rate per interaction between susceptible and infected individuals. Measures like social distancing or mask usage lower <em>a</em>.</p>
       <p><strong>Recovery Coefficient (b):</strong> The daily fraction of infected individuals who recover. It equals <code>1 / d</code>, where <em>d</em> is the average illness duration in days.</p>
-      <p><strong>Threshold Population (S<sub>th</sub>):</strong> An outbreak occurs (<code>I' > 0</code>) only if <code>S > S<sub>th</sub> = b / a</code>.</p>
     </section>
 
      
       <section>
       <h2>Questions</h2>
-      <p>What does the sum of all three rates \(S' + I' + R'\) equal in the standard SIR model, and what physical property does this imply?</p>
-      <p>Under what explicit condition will the number of active infections \(I\) increase (\(I' > 0\))?</p>
+      <p>What does the sum of all three rates <code>S' + I' + R'</code> equal in the standard SIR model, and what physical property does this imply?</p>
       <p>If public health authorities impose masking and social distancing rules, which parameter changes and how?</p>
     </section> 
 
@@ -247,12 +243,14 @@ S = 45400
 I = 2100
 R = 2500
 deltat = 1
+a = 0.00001
+b = 1/14
 print(t, S, I, R)
 
 for k in range(1, 4):          # FOR k = 1 TO 3
-    Sprime = -0.00001 * S * I
-    Iprime = 0.00001 * S * I - I / 14
-    Rprime = I / 14
+    Sprime = -a * S * I
+    Iprime = a * S * I - b * I
+    Rprime = b * I
     deltaS = Sprime * deltat
     deltaI = Iprime * deltat
     deltaR = Rprime * deltat
