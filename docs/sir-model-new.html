@@ -1118,16 +1118,40 @@ document.addEventListener("DOMContentLoaded", function() {
     data: {
       labels: initialSim.labels,
       datasets: [
-        { label: 'Susceptible (S)', data: initialSim.dataS, borderColor: '#1f5f99', backgroundColor: '#1f5f99', pointRadius: 0, borderWidth: 2.5, tension: 0.1 },
-        { label: 'Infected (I)', data: initialSim.dataI, borderColor: '#d9534f', backgroundColor: '#d9534f', pointRadius: 0, borderWidth: 2.5, tension: 0.1 },
-        { label: 'Recovered (R)', data: initialSim.dataR, borderColor: '#2f7d4f', backgroundColor: '#2f7d4f', pointRadius: 0, borderWidth: 2.5, tension: 0.1 }
+        { 
+          label: 'Susceptible (S)', 
+          data: initialSim.dataS, 
+          borderColor: '#000000', 
+          borderDash: [], // Solid line
+          pointRadius: 0, 
+          borderWidth: 2, 
+          tension: 0.1 
+        },
+        { 
+          label: 'Infected (I)', 
+          data: initialSim.dataI, 
+          borderColor: '#000000', 
+          borderDash: [6, 4], // Dashed line
+          pointRadius: 0, 
+          borderWidth: 2, 
+          tension: 0.1 
+        },
+        { 
+          label: 'Recovered (R)', 
+          data: initialSim.dataR, 
+          borderColor: '#000000', 
+          borderDash: [2, 3], // Dotted line
+          pointRadius: 0, 
+          borderWidth: 2, 
+          tension: 0.1 
+        }
       ]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { position: 'top', labels: { boxWidth: 14, font: { size: 12 } } }
+        legend: { position: 'top', labels: { boxWidth: 20, font: { size: 12 } } }
       },
       scales: {
         x: { title: { display: true, text: 'Time (t in days)', font: { weight: '600' } }, grid: { color: '#f1f5f9' } },
