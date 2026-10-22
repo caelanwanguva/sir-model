@@ -28,6 +28,49 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+
+.sir-dashboard {
+    background: #ffffff;
+    border: 1px solid #d9dde3;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+  .sir-controls-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    background: #f8fafc;
+    padding: 1.25rem;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+  }
+  .sir-control-group label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1e293b;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.35rem;
+  }
+  .sir-control-group label span {
+    font-weight: 500;
+    color: #475569;
+    font-variant-numeric: tabular-nums;
+  }
+  .sir-control-group input[type="range"] {
+    width: 100%;
+    accent-color: #1f5f99;
+    cursor: pointer;
+  }
+  .sir-chart-container {
+    position: relative;
+    height: 450px;
+    width: 100%;
+  }
 </style>
 
 
@@ -117,48 +160,47 @@ R' = b &middot; I</pre>
   </pre>
     </section>
 
- <div class="container">
+<section class="column-page sir-dashboard">
+  <h2 class="anchored" style="margin-top: 0; font-size: 1.35rem;">Interactive SIR Model Simulation</h2>
+  <p class="sir-hint">Adjust the epidemiological parameters and initial conditions below to observe real-time changes in population dynamics.</p>
 
-  <!-- Interactive Monochrome Visual Explorer -->
-  <div class="interactive-container">
-    <h2>Interactive SIR Model Graph</h2>
-    <div class="chart-box">
-      <canvas id="sirChart"></canvas>
+  <div class="sir-controls-grid">
+    <div class="sir-control-group">
+      <label for="slider-a">Transmission Rate (a) <span id="val-a">0.00001</span></label>
+      <input type="range" id="slider-a" min="0.000001" max="0.00005" step="0.000001" value="0.00001">
     </div>
 
-    <div class="controls-grid">
-      <div class="control-group">
-        <label>Transmission Rate (a): <span id="a-val" class="val-display">0.00001</span></label>
-        <input type="range" id="param-a" min="0.000001" max="0.00005" step="0.000001" value="0.00001">
-      </div>
+    <div class="sir-control-group">
+      <label for="slider-b">Recovery Rate (b = 1/d) <span id="val-b">0.0714</span></label>
+      <input type="range" id="slider-b" min="0.01" max="0.5" step="0.005" value="0.0714">
+    </div>
 
-      <div class="control-group">
-        <label>Recovery Rate (b = 1/d): <span id="b-val" class="val-display">0.071</span></label>
-        <input type="range" id="param-b" min="0.01" max="0.5" step="0.005" value="0.071428">
-      </div>
+    <div class="sir-control-group">
+      <label for="slider-s0">Initial Susceptibles (S₀) <span id="val-s0">45400</span></label>
+      <input type="range" id="slider-s0" min="10000" max="100000" step="500" value="45400">
+    </div>
 
-      <div class="control-group">
-        <label>Initial Susceptibles (S₀): <span id="s-val" class="val-display">45400</span></label>
-        <input type="range" id="param-s" min="1000" max="100000" step="1000" value="45400">
-      </div>
+    <div class="sir-control-group">
+      <label for="slider-i0">Initial Infected (I₀) <span id="val-i0">2100</span></label>
+      <input type="range" id="slider-i0" min="10" max="10000" step="50" value="2100">
+    </div>
 
-      <div class="control-group">
-        <label>Initial Infected (I₀): <span id="i-val" class="val-display">2100</span></label>
-        <input type="range" id="param-i" min="1" max="10000" step="50" value="2100">
-      </div>
+    <div class="sir-control-group">
+      <label for="slider-dt">Step Size (Δt) <span id="val-dt">1.0</span></label>
+      <input type="range" id="slider-dt" min="0.1" max="2.0" step="0.1" value="1.0">
+    </div>
 
-      <div class="control-group">
-        <label>Step Size (Δt): <span id="dt-val" class="val-display">0.1</span></label>
-        <input type="range" id="param-dt" min="0.01" max="1" step="0.01" value="0.1">
-      </div>
-
-      <div class="control-group">
-        <label>Time Horizon (Days): <span id="t-val" class="val-display">30</span></label>
-        <input type="range" id="param-t" min="5" max="100" step="5" value="30">
-      </div>
+    <div class="sir-control-group">
+      <label for="slider-days">Time Horizon (Days) <span id="val-days">50</span></label>
+      <input type="range" id="slider-days" min="10" max="200" step="5" value="50">
     </div>
   </div>
 
+  <div class="sir-chart-container">
+    <canvas id="sirChart"></canvas>
+  </div>
+</section>
+  
       <section>
       <h2>Questions</h2>
       <p>1. What does the sum of all three rates <code>S' + I' + R'</code> equal in the standard SIR model, and what physical property does this imply?</p>
@@ -1014,128 +1056,113 @@ window._ojs.runtime.interpretFromScriptTags();
 </div> <!-- /content -->
 
 <script>
-  // Simulation & Black-and-White Chart Script
-  let sirChart = null;
+document.addEventListener("DOMContentLoaded", function() {
+  const ctx = document.getElementById('sirChart').getContext('2d');
+  
+  const sliderA = document.getElementById('slider-a');
+  const sliderB = document.getElementById('slider-b');
+  const sliderS0 = document.getElementById('slider-s0');
+  const sliderI0 = document.getElementById('slider-i0');
+  const sliderDt = document.getElementById('slider-dt');
+  const sliderDays = document.getElementById('slider-days');
+  
+  const valA = document.getElementById('val-a');
+  const valB = document.getElementById('val-b');
+  const valS0 = document.getElementById('val-s0');
+  const valI0 = document.getElementById('val-i0');
+  const valDt = document.getElementById('val-dt');
+  const valDays = document.getElementById('val-days');
 
-  function runSIRSimulation() {
-    const a = parseFloat(document.getElementById('param-a').value);
-    const b = parseFloat(document.getElementById('param-b').value);
-    let S = parseFloat(document.getElementById('param-s').value);
-    let I = parseFloat(document.getElementById('param-i').value);
-    let R = 0;
-    const dt = parseFloat(document.getElementById('param-dt').value);
-    const maxT = parseFloat(document.getElementById('param-t').value);
-
-    // Update displays
-    document.getElementById('a-val').textContent = a.toFixed(6);
-    document.getElementById('b-val').textContent = b.toFixed(3);
-    document.getElementById('s-val').textContent = S;
-    document.getElementById('i-val').textContent = I;
-    document.getElementById('dt-val').textContent = dt;
-    document.getElementById('t-val').textContent = maxT;
-
-    const times = [];
-    const sData = [];
-    const iData = [];
-    const rData = [];
-
+  function runSimulation(a, b, S0, I0, deltat, days) {
     let t = 0;
-    const numSteps = Math.floor(maxT / dt);
+    let S = S0;
+    let I = I0;
+    let R = 2500;
+    const steps = Math.floor(days / deltat);
 
-    for (let step = 0; step <= numSteps; step++) {
-      times.push(t.toFixed(1));
-      sData.push(S);
-      iData.push(I);
-      rData.push(R);
+    const labels = [0];
+    const dataS = [S];
+    const dataI = [I];
+    const dataR = [R];
 
-      const dS = -a * S * I;
-      const dI = a * S * I - b * I;
-      const dR = b * I;
+    for (let k = 0; k < steps; k++) {
+      const Sprime = -a * S * I;
+      const Iprime = a * S * I - b * I;
+      const Rprime = b * I;
 
-      S += dS * dt;
-      I += dI * dt;
-      R += dR * dt;
-      t += dt;
+      S += Sprime * deltat;
+      I += Iprime * deltat;
+      R += Rprime * deltat;
+      t += deltat;
+
+      labels.push(Number(t.toFixed(2)));
+      dataS.push(Math.max(0, S));
+      dataI.push(Math.max(0, I));
+      dataR.push(Math.max(0, R));
     }
 
-    return { times, sData, iData, rData };
+    return { labels, dataS, dataI, dataR };
   }
 
-  function renderChart() {
-    const simData = runSIRSimulation();
-    const ctx = document.getElementById('sirChart').getContext('2d');
+  const initialSim = runSimulation(
+    parseFloat(sliderA.value),
+    parseFloat(sliderB.value),
+    parseFloat(sliderS0.value),
+    parseFloat(sliderI0.value),
+    parseFloat(sliderDt.value),
+    parseFloat(sliderDays.value)
+  );
 
-    if (sirChart) {
-      sirChart.destroy();
-    }
-
-    sirChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: simData.times,
-        datasets: [
-          {
-            label: 'Susceptible (S)',
-            data: simData.sData,
-            borderColor: '#000000',
-            borderWidth: 2,
-            borderDash: [], // Solid line
-            pointRadius: 0,
-            fill: false
-          },
-          {
-            label: 'Infected (I)',
-            data: simData.iData,
-            borderColor: '#000000',
-            borderWidth: 2,
-            borderDash: [5, 5], // Dashed line
-            pointRadius: 0,
-            fill: false
-          },
-          {
-            label: 'Recovered (R)',
-            data: simData.rData,
-            borderColor: '#666666',
-            borderWidth: 2,
-            borderDash: [2, 2], // Dotted line
-            pointRadius: 0,
-            fill: false
-          }
-        ]
+  const sirChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: initialSim.labels,
+      datasets: [
+        { label: 'Susceptible (S)', data: initialSim.dataS, borderColor: '#1f5f99', backgroundColor: '#1f5f99', pointRadius: 0, borderWidth: 2.5, tension: 0.1 },
+        { label: 'Infected (I)', data: initialSim.dataI, borderColor: '#d9534f', backgroundColor: '#d9534f', pointRadius: 0, borderWidth: 2.5, tension: 0.1 },
+        { label: 'Recovered (R)', data: initialSim.dataR, borderColor: '#2f7d4f', backgroundColor: '#2f7d4f', pointRadius: 0, borderWidth: 2.5, tension: 0.1 }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top', labels: { boxWidth: 14, font: { size: 12 } } }
       },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: false,
-        scales: {
-          x: {
-            title: { display: true, text: 'Time (Days)', color: '#000' },
-            grid: { color: '#e5e5e5' },
-            ticks: { color: '#000' }
-          },
-          y: {
-            title: { display: true, text: 'Population Count', color: '#000' },
-            grid: { color: '#e5e5e5' },
-            ticks: { color: '#000' }
-          }
-        },
-        plugins: {
-          legend: {
-            labels: { color: '#000', font: { weight: 'bold' } }
-          }
-        }
+      scales: {
+        x: { title: { display: true, text: 'Time (t in days)', font: { weight: '600' } }, grid: { color: '#f1f5f9' } },
+        y: { title: { display: true, text: 'Population Count', font: { weight: '600' } }, beginAtZero: true, grid: { color: '#f1f5f9' } }
       }
-    });
-  }
-
-  // Attach Listeners
-  const inputs = ['param-a', 'param-b', 'param-s', 'param-i', 'param-dt', 'param-t'];
-  inputs.forEach(id => {
-    document.getElementById(id).addEventListener('input', renderChart);
+    }
   });
 
-  // Initial render
-  window.addEventListener('DOMContentLoaded', renderChart);
+  function updateChart() {
+    const a = parseFloat(sliderA.value);
+    const b = parseFloat(sliderB.value);
+    const S0 = parseFloat(sliderS0.value);
+    const I0 = parseFloat(sliderI0.value);
+    const deltat = parseFloat(sliderDt.value);
+    const days = parseFloat(sliderDays.value);
+
+    valA.textContent = a.toFixed(6);
+    valB.textContent = b.toFixed(4);
+    valS0.textContent = S0;
+    valI0.textContent = I0;
+    valDt.textContent = deltat.toFixed(1);
+    valDays.textContent = days;
+
+    const sim = runSimulation(a, b, S0, I0, deltat, days);
+    sirChart.data.labels = sim.labels;
+    sirChart.data.datasets[0].data = sim.dataS;
+    sirChart.data.datasets[1].data = sim.dataI;
+    sirChart.data.datasets[2].data = sim.dataR;
+    sirChart.update();
+  }
+
+  [sliderA, sliderB, sliderS0, sliderI0, sliderDt, sliderDays].forEach(slider => {
+    slider.addEventListener('input', updateChart);
+  });
+});
 </script>
 
 
