@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+<head>
 
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.10.19">
@@ -45,7 +47,7 @@ ul.task-list li input[type="checkbox"] {
 <script type="module" src="sir-model_files/libs/quarto-ojs/quarto-ojs-runtime.js"></script>
 <link href="sir-model_files/libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
 
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body class="fullcontent quarto-light">
@@ -109,6 +111,38 @@ R' = b &middot; I</pre>
     t<sub>new</sub> = t + &Delta;t
   </pre>
     </section>
+
+  <section class="column-page" style="margin-top: 2rem;">
+  <h2 class="anchored">Graph for the SIR Model</h2>
+  <p class="sir-hint">Adjust parameters to update the SIR simulation graph in real time.</p>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 1.5rem; background: #f7f8fa; padding: 1rem; border-radius: 6px; border: 1px solid #d9dde3;">
+    <div style="flex: 1; min-width: 200px;">
+      <label for="slider-a" style="font-weight: 600; display: block; margin-bottom: 0.25rem;">
+        Transmission Rate (a): <span id="val-a">0.00001</span>
+      </label>
+      <input type="range" id="slider-a" min="0.000001" max="0.00005" step="0.000001" value="0.00001" style="width: 100%;">
+    </div>
+
+    <div style="flex: 1; min-width: 200px;">
+      <label for="slider-b" style="font-weight: 600; display: block; margin-bottom: 0.25rem;">
+        Recovery Rate (b): <span id="val-b">0.0714</span>
+      </label>
+      <input type="range" id="slider-b" min="0.01" max="0.5" step="0.005" value="0.0714" style="width: 100%;">
+    </div>
+
+    <div style="flex: 1; min-width: 200px;">
+      <label for="slider-days" style="font-weight: 600; display: block; margin-bottom: 0.25rem;">
+        Simulation Days: <span id="val-days">60</span>
+      </label>
+      <input type="range" id="slider-days" min="10" max="150" step="1" value="60" style="width: 100%;">
+    </div>
+  </div>
+
+  <div style="position: relative; height: 380px; width: 100%; border: 1px solid #d9dde3; border-radius: 6px; padding: 1rem; background: #ffffff;">
+    <canvas id="sirChart"></canvas>
+  </div>
+</section>
 
       <section>
       <h2>Questions</h2>
@@ -964,7 +998,98 @@ window._ojs.runtime.interpretFromScriptTags();
   </script>
 </div> <!-- /content -->
 
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const ctx = document.getElementById('sirChart').getContext('2d');
+  
+  const sliderA = document.getElementById('slider-a');
+  const sliderB = document.getElementById('slider-b');
+  const sliderDays = document.getElementById('slider-days');
+  
+  const valA = document.getElementById('val-a');
+  const valB = document.getElementById('val-b');
+  const valDays = document.getElementById('val-days');
 
+  function runSimulation(a, b, days) {
+    let t = 0;
+    let S = 45400;
+    let I = 2100;
+    let R = 2500;
+    const deltat = 0.5;
+    const steps = Math.floor(days / deltat);
+
+    const labels = [0];
+    const dataS = [S];
+    const dataI = [I];
+    const dataR = [R];
+
+    for (let k = 0; k < steps; k++) {
+      const Sprime = -a * S * I;
+      const Iprime = a * S * I - b * I;
+      const Rprime = b * I;
+
+      S += Sprime * deltat;
+      I += Iprime * deltat;
+      R += Rprime * deltat;
+      t += deltat;
+
+      labels.push(t.toFixed(1));
+      dataS.push(S);
+      dataI.push(I);
+      dataR.push(R);
+    }
+
+    return { labels, dataS, dataI, dataR };
+  }
+
+  const initialSim = runSimulation(
+    parseFloat(sliderA.value),
+    parseFloat(sliderB.value),
+    parseInt(sliderDays.value)
+  );
+
+  const sirChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: initialSim.labels,
+      datasets: [
+        { label: 'Susceptible (S)', data: initialSim.dataS, borderColor: '#1f5f99', backgroundColor: '#1f5f99', pointRadius: 0, borderWidth: 2 },
+        { label: 'Infected (I)', data: initialSim.dataI, borderColor: '#d9534f', backgroundColor: '#d9534f', pointRadius: 0, borderWidth: 2 },
+        { label: 'Recovered (R)', data: initialSim.dataR, borderColor: '#2f7d4f', backgroundColor: '#2f7d4f', pointRadius: 0, borderWidth: 2 }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: { title: { display: true, text: 'Time (t in days)' } },
+        y: { title: { display: true, text: 'Population' }, beginAtZero: true }
+      }
+    }
+  });
+
+  function updateChart() {
+    const a = parseFloat(sliderA.value);
+    const b = parseFloat(sliderB.value);
+    const days = parseInt(sliderDays.value);
+
+    valA.textContent = a.toFixed(6);
+    valB.textContent = b.toFixed(4);
+    valDays.textContent = days;
+
+    const sim = runSimulation(a, b, days);
+    sirChart.data.labels = sim.labels;
+    sirChart.data.datasets[0].data = sim.dataS;
+    sirChart.data.datasets[1].data = sim.dataI;
+    sirChart.data.datasets[2].data = sim.dataR;
+    sirChart.update();
+  }
+
+  sliderA.addEventListener('input', updateChart);
+  sliderB.addEventListener('input', updateChart);
+  sliderDays.addEventListener('input', updateChart);
+});
+</script>
 
 
 </body></html>
